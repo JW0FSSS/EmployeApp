@@ -1,0 +1,87 @@
+﻿@using EmployeApp.Models.ViewModel
+
+@model TrabajadorViewModel
+
+
+<div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Editar" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Trabajador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" name="Id" id="edit-id" />
+
+                    <div class="mb-3">
+                        <label>Tipo Documento</label>
+                        <select name="TipoDocumento" id="edit-tipo" class="form-select">
+                            <option value=""> Seleccione tipo </option>
+                            <option value="DNI">DNI</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>N° Documento</label>
+                        <input name="NumeroDocumento" id="edit-numdoc" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Nombres</label>
+                        <input name="Nombres" id="edit-nombres" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Sexo</label>
+                        <select name="Sexo" id="edit-sexo" class="form-select">
+                            <option value=""> Seleccione sexo </option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Departamento</label>
+                        <select name="IdDepartamento" id="edit-dep" class="form-select">
+                            <option value=""> Seleccione departamento </option>
+                            @foreach (var dep in Model.Departamentos)
+                            {
+                                <option value="@dep.Id">@dep.NombreDepartamento</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Provincia</label>
+                        <select name="IdProvincia" id="edit-prov" class="form-select">
+                            <option value="">Seleccione provincia </option>
+                            @foreach (var prov in Model.Provincias)
+                            {
+                                <option value="@prov.Id">@prov.NombreProvincia</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Distrito</label>
+                        <select name="IdDistrito" id="edit-dist" class="form-select">
+                            <option value="">Seleccione distrito </option>
+                            @foreach (var dist in Model.Distritos)
+                            {
+                                <option value="@dist.Id">@dist.NombreDistrito</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Actualizar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

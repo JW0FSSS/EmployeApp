@@ -1,0 +1,83 @@
+﻿@using EmployeApp.Models.ViewModel
+
+@model TrabajadorViewModel
+
+
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Crear"  method="post" id="form_modal">
+                <div asp-validation-summary="All" class="text-danger" hidden></div>
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearModalLabel">Registrar Trabajador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Tipo Documento</label>
+                        <select asp-for="Trabajador.TipoDocumento" class="form-select" required id="tipoDocumento">
+                            <option value=""> Seleccione un tipo </option>
+                            <option value="DNI">DNI</option>
+                        </select>
+                        <span asp-validation-for="Trabajador.TipoDocumento" class="text-danger"></span>
+                    </div>
+
+                    
+                    <div class="mb-3">
+                        <label class="form-label">N° Documento</label>
+                        <input asp-for="Trabajador.NumeroDocumento" class="form-control" required disabled  id="inputDocumento" />
+                        <span asp-validation-for="Trabajador.NumeroDocumento" class="text-danger"></span>
+                    </div>
+
+                   
+                    <div class="mb-3">
+                        <label class="form-label">Nombres</label>
+                        <input asp-for="Trabajador.Nombres" class="form-control" required />
+                        <span asp-validation-for="Trabajador.Nombres" class="text-danger"></span>
+                    </div>
+
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Sexo</label>
+                        <select asp-for="Trabajador.Sexo" class="form-select" required>
+                            <option value=""> Seleccione sexo </option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                        <span asp-validation-for="Trabajador.Sexo" class="text-danger"></span>
+                    </div>
+
+                    <div >
+                    <label class="form-label">Donde se encuentra?</label>
+                    </div>
+                    <span asp-validation-for="Trabajador.IdDepartamento" class="text-danger"></span>
+                    <select asp-for="Trabajador.IdDepartamento" class="form-select" id="departamentoSelect">
+                        <option value="">  Seleccione departamento  </option>
+                        @foreach (var dep in Model.Departamentos)
+                        {
+                            <option value="@dep.Id">@dep.NombreDepartamento</option>
+                        }
+                    </select>
+
+                    <select asp-for="Trabajador.IdProvincia" class="form-select" id="provinciaSelect" disabled>
+                        <option value=""> Seleccione provincia  </option>
+                    </select>
+
+                    <select asp-for="Trabajador.IdDistrito" class="form-select" id="distritoSelect"  disabled>
+                        <option value="">  Seleccione distrito  </option>
+                    </select>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

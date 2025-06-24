@@ -1,0 +1,198 @@
+﻿@using EmployeApp.Models.ViewModel
+@model TrabajadorViewModel
+
+
+    <h1 class="h1 text-center">Listado de Trabajadores</h1>
+
+    <div class="d-flex justify-content-between mb-5 align-items-center">
+
+       <button class="btn btn-primary px-5 py-2" data-bs-toggle="modal" data-bs-target="#crearModal">
+            Nuevo Registro
+        </button>
+
+    <div class="btn ">
+
+        <form method="get" class="mb-3">
+            <label for="sexo">Filtrar por sexo:</label>
+            <select name="sexo" id="sexo" class="form-select" onchange="this.form.submit()">
+                <option value=""> Todos </option>
+                <option value="M" selected="@(ViewBag.FiltroSexo == "M")">Masculino</option>
+                <option value="F" selected="@(ViewBag.FiltroSexo == "F")">Femenino</option>
+            </select>
+        </form>
+    </div>
+
+    </div>
+
+    <table class="table table-bordered ">
+        
+        <thead>
+            <tr>
+                <td>Tipo Documento</td>
+                <td>Nro Documento</td>
+                <td>Nombres</td>
+                <td>Sexo</td>
+                <td>Departamento</td>
+                <td>Provincia</td>
+                <td>Distrito</td>
+                <td class="text-center">Accion</td>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            @foreach (var trabajador in Model.Trabajadores)
+            {
+                <tr class=@(trabajador.Sexo == "M" ?"bg-info":"bg-orange")>
+                    <td>@trabajador.TipoDocumento</td>
+                    <td>@trabajador.NumeroDocumento</td>
+                    <td>@trabajador.Nombres</td>
+                    <td>@trabajador.Sexo</td>
+                    <td>@(trabajador.IdDepartamentoNavigation?.NombreDepartamento ??  "--" )</td>
+                    <td>@(trabajador.IdProvinciaNavigation?.NombreProvincia ?? "--" )</td>
+                    <td>@(trabajador.IdDistritoNavigation?.NombreDistrito ?? "--" )</td>
+                    <td class="bg-light d-flex justify-content-evenly">
+                    <button class="btn btn-warning"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editarModal"
+                            data-id="@trabajador.Id"
+                            data-tipodocumento="@trabajador.TipoDocumento"
+                            data-numerodocumento="@trabajador.NumeroDocumento"
+                            data-nombres="@trabajador.Nombres"
+                            data-sexo="@trabajador.Sexo"
+                            data-departamento="@trabajador.IdDepartamento"
+                            data-provincia="@trabajador.IdProvincia"
+                            data-distrito="@trabajador.IdDistrito">
+                        Editar
+                    </button>
+
+
+                    <button class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#eliminarModal"
+                            data-id="@trabajador.Id">
+                        Eliminar
+                    </button>
+
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+
+@await Html.PartialAsync("_CreateModal", Model)
+@await Html.PartialAsync("_EditModal", Model)
+@await Html.PartialAsync("_DeleteModal")
+
+<style>
+    .bg-orange {
+        background-color: #FFA500 !important; 
+    }
+</style>
+
+@section Scripts {
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+                 
+
+            const tipoDocumentoSelect =document.getElementById('tipoDocumento')
+            const numeroDocumentoInput =document.getElementById('inputDocumento')
+            const departamentoSelect = document.getElementById('departamentoSelect');
+            const provinciaSelect = document.getElementById('provinciaSelect');
+            const edit_prov = document.getElementById('edit-prov');
+            const distritoSelect = document.getElementById('distritoSelect');
+            const edit_dist = document.getElementById('edit-dist');
+            const editarModal = document.getElementById('editarModal');
+            const eliminarModal = document.getElementById('eliminarModal');
+            const edit_dep=document.getElementById('edit-dep')
+
+            const SeletTypeDocument=(()=>{
+                    numeroDocumentoInput.disabled=false
+                })
+
+            const EditFieldsModal=(event)=>{
+                       const button = event.relatedTarget;
+
+                        document.getElementById('edit-id').value = button.getAttribute('data-id');
+                        document.getElementById('edit-tipo').value = button.getAttribute('data-tipodocumento');
+                        document.getElementById('edit-numdoc').value = button.getAttribute('data-numerodocumento');
+                        document.getElementById('edit-nombres').value = button.getAttribute('data-nombres');
+                        document.getElementById('edit-sexo').value = button.getAttribute('data-sexo');
+                        document.getElementById('edit-dep').value = button.getAttribute('data-departamento');
+                        document.getElementById('edit-prov').value = button.getAttribute('data-provincia');
+                        document.getElementById('edit-dist').value = button.getAttribute('data-distrito');
+                   }
+
+            const DeleteModal=(event)=>{
+                        const button = event.relatedTarget;
+                        const id = button.getAttribute('data-id');
+                        document.getElementById('eliminar-id').value = id;
+                   }
+
+            const SelectDeparments=(prov_select,dist_select)=> (e)=> {
+                        const idDepartamento = e.target.value;
+
+                        if (idDepartamento) {
+                            fetch(`/Trabajador/ObtenerProvincias?idDepartamento=${idDepartamento}`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    prov_select.innerHTML='<option value="">  Seleccione provincia  </option>';
+                                    dist_select.innerHTML='<option value="">  Seleccione distrito  </option>'
+                                    prov_select.value='';
+                                    data.forEach(p => {
+                                        const option = document.createElement('option');
+                                                option.value = p.id;
+                                                option.text = p.nombreProvincia;
+
+                                        prov_select.appendChild(option);
+                                        dist_select.disabled=true
+                                        prov_select.disabled=false
+                                    });
+                                });
+                        }
+                    }
+
+            const SelectProvince=(dist_select)=>(e) => {
+                        const idProvincia = e.target.value;
+
+                        if (idProvincia) {
+                            fetch(`/Trabajador/ObtenerDistritos?idProvincia=${idProvincia}`)
+                                .then(res => res.json())
+                                .then(data => {
+
+                                        dist_select.innerHTML='<option value="">  Seleccione distrito</option>'
+                                        dist_select.value=''
+
+                                    data.forEach(d => {
+                                        const option = document.createElement('option');
+                                                option.value = d.id;
+                                                option.text = d.nombreDistrito;
+
+                                        dist_select.appendChild(option);
+                                        dist_select.disabled=false
+                                    });
+                                });
+                        }
+                    }
+
+            tipoDocumentoSelect.addEventListener('change',SeletTypeDocument);
+
+            edit_dep.addEventListener('change',SelectDeparments(edit_prov,edit_dist));
+
+            edit_prov.addEventListener('change',SelectProvince(edit_dist));
+
+            editarModal.addEventListener('show.bs.modal', EditFieldsModal);
+
+            eliminarModal.addEventListener('show.bs.modal', DeleteModal);
+
+            departamentoSelect.addEventListener('change',SelectDeparments(provinciaSelect,distritoSelect));
+
+            provinciaSelect.addEventListener('change', SelectProvince(distritoSelect));
+        });
+    </script>
+}
