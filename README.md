@@ -1,4 +1,4 @@
-# 💼 EmpleadoApp (.NET Core MVC)
+# 💼 EmployeeApp (.NET Core MVC)
 
 Proyecto web ASP.NET Core MVC para registrar y gestionar trabajadores con relación a departamentos, provincias y distritos. Utiliza Entity Framework Core y Bootstrap para el diseño del frontend.
 
